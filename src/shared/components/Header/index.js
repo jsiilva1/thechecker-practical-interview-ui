@@ -1,8 +1,20 @@
+/**
+ * External Dependencies
+ */
 import React from 'react';
 
+/**
+ * Internal Dependencies
+ */
 import Logo from '../Logo';
 import { HeaderBox } from './styles';
 
+/**
+ * Component Header
+ * Render default header of pages 
+ *
+ * @return {Object} component.
+ */
 const Header = () => (
   <HeaderBox>
     <Logo />

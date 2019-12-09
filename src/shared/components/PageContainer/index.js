@@ -3,6 +3,9 @@
  */
 import React from 'react';
 
+/**
+ * Internal Dependencies
+ */
 import { Container } from './styles';
 
 /**

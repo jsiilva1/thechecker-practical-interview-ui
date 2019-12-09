@@ -1,7 +1,19 @@
+/**
+ * External Dependencies
+ */
 import React from 'react';
 
+/**
+ * Internal Dependencies
+ */
 import { FooterBox } from './styles';
 
+/**
+ * Component Footer
+ * Render default footer of pages 
+ *
+ * @return {Object} component.
+ */
 const Footer = () => (
   <FooterBox>
     <p>

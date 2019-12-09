@@ -1,8 +1,20 @@
+/**
+ * External Dependencies
+ */
 import React from 'react';
 
+/**
+ * Internal Dependencies
+ */
 import { Button } from '../../theme/objects/Button';
 import { CardListWrapper, List } from './styles';
 
+/**
+ * Component CardList
+ * Render the cards of lists
+ *
+ * @return {Object} component.
+ */
 const CardList = () => {
   return (
     <CardListWrapper>

@@ -12,6 +12,7 @@ export const CardListWrapper = styled.section`
 export const List = styled.article`
   background: #FFF;
   width: calc(80vh - 21%);
+  min-width: 300px;
   min-height: calc(65vh - 200px); 
   box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 4px;
   border: 1px solid #ecf0f1;
@@ -19,9 +20,15 @@ export const List = styled.article`
   padding: 20px; 
   margin: 0px 9px 10px 0;
 
+  @media ${device.tablet}, ${device.mobile} {
+    .list-title {
+      font-size: 1.5rem;
+    }
+  }
+
   @media ${device.mobile} {
     width: 100%;
-    min-height: calc(100vh - 350px); 
+    min-height: calc(80vh - 280px); 
     margin: 0px 0 10px 0;
 
     &:last-child {
