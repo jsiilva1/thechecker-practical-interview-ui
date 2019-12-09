@@ -10,11 +10,19 @@ const CardList = () => {
       </List>
 
       <List>
-        Lista 2 
+        Lista 1
       </List>
 
       <List>
-        Lista 3
+        Lista 1
+      </List>
+
+      <List>
+        Lista 1
+      </List>
+
+      <List>
+        Lista 1
       </List>
     </CardListWrapper>
   );

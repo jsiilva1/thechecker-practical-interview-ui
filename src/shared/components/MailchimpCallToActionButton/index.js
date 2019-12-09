@@ -7,7 +7,7 @@ import { CallToActionWrapper } from './styles';
 const MailchimpCallToActionButton = () => {
   return (
     <CallToActionWrapper>
-      <Button color={'secondary'}>
+      <Button color={'secondary'} title='Select integration with Mailchimp'>
         <Icon 
           name={['fab', 'mailchimp']}
           vendor='fa'
