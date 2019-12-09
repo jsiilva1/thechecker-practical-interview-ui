@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Button = styled.div`
+export const Button = styled.button`
   box-shadow: 0px 10px 14px -7px #95a5a6;
 	border-radius: 20px;
 	display: inline-block;
@@ -8,7 +8,10 @@ export const Button = styled.div`
 	font-weight: 800;
 	padding: 13px 32px;
   text-shadow: 0px 1px 0px #3d768a;
-  
+  line-height: normal;
+  overflow: visible;
+  border: 0;
+
   color: ${props => {
     if (props.color) {
       const { color } = props;
@@ -45,16 +48,16 @@ export const Button = styled.div`
   }}
 
   opacity: ${props => {
-    if (props.disabled && props.disabled === 'true') {
+    if (props.disabled && props.disabled === true) {
       return '0.5';
     }
   }};
 
   cursor: ${props => {
-    if (props.disabled && props.disabled === 'true') {
+    if (props.disabled && props.disabled === true) {
       return 'default';
     } else {
-      return 'pointer;'
+      return 'pointer'
     }
   }};
 

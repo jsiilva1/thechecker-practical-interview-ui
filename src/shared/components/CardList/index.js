@@ -24,6 +24,7 @@ const CardList = () => {
   const [emailsList, setEmailsList] = useState([]);
   const [verifiedEmails, setVerifiedEmails] = useState([]);
   const [lists, setLists] = useState([]);
+  const [isChecking, setIsChecking] = useState(false);
 
   useEffect(() => {
     // Get lists from username
@@ -79,6 +80,8 @@ const CardList = () => {
 
   const handleTheCheckerVerification = () => {
     const fetchResults = async (email, i) => {
+      setIsChecking(true);
+
       setTimeout(async () => { 
         const response = await doRequest2({
           method: 'POST',
@@ -96,12 +99,10 @@ const CardList = () => {
   };
 
   const displayStatus = () => {
-    if (verifiedEmailsCount === amountEmails) {
-      return <p className='displayed-status'>Verification completed</p>;
-    } 
-
     if (verifiedEmailsCount <= amountEmails) {
       return <p className='displayed-status'>{verifiedEmailsCount} of {amountEmails} verified<br /></p>;
+    } else if (verifiedEmailsCount === amountEmails) {
+      return <p className='displayed-status'>Verification completed</p>;
     }
   };
 
@@ -124,6 +125,7 @@ const CardList = () => {
               color='light' 
               title={`Execute verification on ${lists[0].member_count} emails in TheChecker Single Verification API`}
               onClick={() => handleTheCheckerVerification()}
+              disabled={!isChecking ? false : true}
               >
               Execute verification
             </Button>
