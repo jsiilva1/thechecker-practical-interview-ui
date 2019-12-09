@@ -1,8 +1,26 @@
-import React, { useState } from 'react';
+import React from 'react';
+
+import { CardListWrapper, List } from './styles';
 
 const CardList = () => {
   return (
-    <p>Card List</p>
+    <CardListWrapper>
+      <List>
+        Import list from MailChimp
+      </List>
+
+      <List>
+        Olá
+      </List>
+
+      <List>
+        Olá
+      </List>
+
+      <List>
+        Olá
+      </List>
+    </CardListWrapper>
   );
 };
 

@@ -5,6 +5,8 @@ import Header from './shared/components/Header';
 import Footer from './shared/components/Footer';
 import BarProgressIndicator from './shared/components/BarProgressIndicator';
 import PageContainer from './shared/components/PageContainer';
+import CardList from './shared/components/CardList';
+import MailchimpCallToActionButton from './shared/components/MailchimpCallToActionButton';
 
 import { loadFonts, GlobalStyle } from './shared/theme/core';
 
@@ -29,8 +31,10 @@ const App = () => {
       <Header />
       
       <PageContainer>
-        Container page
+        <CardList />
       </PageContainer>
+
+      <MailchimpCallToActionButton />
 
       <Footer />    
     </>

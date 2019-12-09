@@ -1,9 +1,9 @@
 /**
  * External Dependencies
  */
-import React from 'React';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import changeCase from 'change-case';
+import { pascalCase } from 'change-case';
 import * as FeatherIcons from 'react-feather';
 import * as far from '@fortawesome/free-regular-svg-icons';
 import * as fas from '@fortawesome/free-solid-svg-icons';
@@ -38,7 +38,7 @@ const Icon = (props) => {
 
   // Feather.
   if ('feather' === vendor) {
-    name = changeCase.pascalCase( name );
+    name = pascalCase(name);
 
     if (!FeatherIcons[name]) {
       name = 'AlertTriangle';
@@ -46,7 +46,7 @@ const Icon = (props) => {
 
     const RenderIcon = FeatherIcons[name];
 
-    result = <RenderIcon {...opts} strokeWidth="1.5" />;
+    result = <RenderIcon { ...opts } strokeWidth="1.5" />;
   }
 
   // FontAwesome.
@@ -59,7 +59,7 @@ const Icon = (props) => {
       name = name[1];
     }
 
-    name = `fa${changeCase.pascalCase(name)}`;
+    name = `fa${pascalCase(name)}`;
 
     if (faLib[lib] && faLib[lib][name]) {
       icon = faLib[lib][name];
