@@ -5,7 +5,7 @@ export const GlobalStyle = createGlobalStyle`
   body {
     background-color: #F0F0F0; /*#F0F4F3*/
     font-size: calc(14px + (26 - 14) * ((100vw - 300px) / (1600 - 300)));
-    font-family: 'Lato', 'Roboto', sans-serif;
+    font-family: 'Lato', sans-serif;
     margin: 0;
     padding: 0;
   }

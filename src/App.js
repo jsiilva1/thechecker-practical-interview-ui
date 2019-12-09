@@ -1,9 +1,13 @@
 import React from 'react';
 
+import { loadFonts, GlobalStyle } from './shared/theme/core';
+
 function App() {
   return (
     <div className="App">
-      hello world from thechecker practical interview app 
+      <loadFonts />
+      <GlobalStyle />
+      <p>hello world from thechecker practical interview app</p>
     </div>
   );
 }
