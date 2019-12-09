@@ -2,7 +2,7 @@
  * External Dependencies
  */
 import React, { useEffect } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 
 /**
  * Internal Dependencies

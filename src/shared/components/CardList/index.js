@@ -1,14 +1,15 @@
 /**
  * External Dependencies
  */
-import React, { useState, useEffect, withState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 /**
  * Internal Dependencies
  */
 import { Button } from '../../theme/objects/Button';
-import { CardListWrapper, List } from './styles';
+import { CardListWrapper, List, ListBody } from './styles';
 import { doRequest } from '../../utils/requestHandler';
+import ProgressBar from '../ProgressBar';
 
 /**
  * Component CardList
@@ -63,23 +64,29 @@ const CardList = () => {
   return (
     <CardListWrapper>
       <List>
-        <h1 className='list-title'>List title</h1>
-        <h2 className='list-id'>ID: 5deb0de401e34328d288d398</h2>
-        <p className='list-createdat'>Created at December 6, 2019 11:26 PM</p>
+        <ListBody>
+          <h1 className='list-title'>List title</h1>
+          <h2 className='list-id'>ID: 5deb0de401e34328d288d398</h2>
+          <p className='list-createdat'>Created at December 6, 2019 11:26 PM</p>
 
-        <p className='stats' title="View list">
-          <span className='stats-number'>4</span> emails in list
-        </p>
+          <p className='stats' title="View list">
+            <span className='stats-number'>4</span> emails in list
+          </p>
 
-        {verifiedEmailsCount} de {amountEmails} <br />
+          {verifiedEmailsCount} de {amountEmails} verified<br />
 
-        <Button 
-          color='light' 
-          title="Execute verification on 4 emails in TheChecker Single Verification API"
-          onClick={() => handleTheCheckerVerification()}
-          >
-          Execute verification
-        </Button>
+          <Button 
+            color='light' 
+            title="Execute verification on 4 emails in TheChecker Single Verification API"
+            onClick={() => handleTheCheckerVerification()}
+            >
+            Execute verification
+          </Button>
+        </ListBody>
+
+        <div className='progress-bar-wrapper'>
+            <ProgressBar percent={(verifiedEmailsCount / amountEmails) * 100} />
+          </div>
       </List>
     </CardListWrapper>
   );

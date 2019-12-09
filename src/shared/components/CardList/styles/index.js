@@ -17,7 +17,6 @@ export const List = styled.article`
   box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 4px;
   border: 1px solid #ecf0f1;
   border-radius: 7px;
-  padding: 20px; 
   margin: 0px 9px 10px 0;
 
   @media ${device.tablet}, ${device.mobile} {
@@ -36,13 +35,13 @@ export const List = styled.article`
     }
   }
 
-  > .list-title {
+  & .list-title {
     margin: 0;
     font-weight: 900;
     font-style: bold;
   }
   
-  > .list-id {
+  & .list-id {
     margin: 2px 0;
     font-size: 0.98rem;
     font-weight: 500;
@@ -50,7 +49,7 @@ export const List = styled.article`
     color: #B8B8B8;
   }
 
-  > .list-createdat {
+  & .list-createdat {
     margin: 4px 0;
     font-size: 0.8rem;
     font-weight: 500;
@@ -81,8 +80,18 @@ export const List = styled.article`
     text-shadow: none !important;
     color: #999 !important;
   }
+
+  & .progress-bar-wrapper {
+    margin: 0;
+    position: relative;
+    bottom: 0;
+  }
 `;
 
 export const ListHeader = styled.div`
   border-bottom: 1px solid #D0D0D0;
+`;
+
+export const ListBody = styled.div`
+  margin: 20px;
 `;
