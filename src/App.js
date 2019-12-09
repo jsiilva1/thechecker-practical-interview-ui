@@ -11,7 +11,6 @@ const App = () => {
       <GlobalStyle />
       
       <Header />
-        <p>hello world from thechecker practical interview app</p>
       <Footer />
     </div>
   );
