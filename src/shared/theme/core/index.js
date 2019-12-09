@@ -1,9 +1,9 @@
 import { GlobalStyle } from './globalStyle';
 import { Normalize } from './normalize';
-import { loadFonts } from './loadFonts';
+import { LoadFonts } from './loadFonts';
 
 export {
   GlobalStyle,
   Normalize,
-  loadFonts,
+  LoadFonts,
 };

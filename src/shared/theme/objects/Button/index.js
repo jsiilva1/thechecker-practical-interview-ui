@@ -45,13 +45,13 @@ export const Button = styled.div`
   }}
 
   opacity: ${props => {
-    if (props.disabled) {
+    if (props.disabled && props.disabled === 'true') {
       return '0.5';
     }
   }};
 
   cursor: ${props => {
-    if (props.disabled) {
+    if (props.disabled && props.disabled === 'true') {
       return 'default';
     } else {
       return 'pointer;'

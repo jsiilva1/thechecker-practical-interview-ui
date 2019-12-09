@@ -4,7 +4,7 @@ import LatoLight from '../../assets/fonts/Lato-Light.ttf';
 import LatoRegular from '../../assets/fonts/Lato-Regular.ttf';
 import LatoBlack from '../../assets/fonts/Lato-Black.ttf';
 
-export const loadFonts = css`
+export const LoadFonts = css`
   @font-face {
     font-family: 'Lato', sans-serif;
     src: url(${LatoLight}) format('ttf');

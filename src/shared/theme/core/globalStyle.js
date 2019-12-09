@@ -1,5 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import { Reset } from 'styled-reset';
+import { LoadFonts } from '../core';
 
 export const GlobalStyle = createGlobalStyle`
   body {
@@ -12,4 +13,5 @@ export const GlobalStyle = createGlobalStyle`
 
   a { text-decoration: none; color: inherit; }
   ${Reset}
+  ${LoadFonts}
 `;

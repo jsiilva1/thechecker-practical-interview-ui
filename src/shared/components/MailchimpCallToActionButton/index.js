@@ -2,6 +2,7 @@
  * External Dependencies
  */
 import React, { useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 /**
  * Internal Dependencies
@@ -25,6 +26,8 @@ const MailchimpCallToActionButton = () => {
   };
 
   useEffect(() => {
+    toast.info('The integration with mailchimp was successful!');
+
     const { search } = window.location;
     const params = new URLSearchParams(search);
     
@@ -42,21 +45,23 @@ const MailchimpCallToActionButton = () => {
           const { data } = res;
 
           localStorage.setItem('access_token', data.access_token);
-
-          // To-do success alert
+        
         });
     }
   });
 
   return (
     <CallToActionWrapper>
-      <Button color={'secondary'} title='Select integration with Mailchimp'>
+      <Button 
+        color={'secondary'} title='Select integration with Mailchimp'
+        onClick={() => handleActionMailchimpIntegration()}
+        >
         <Icon 
           name={['fab', 'mailchimp']} 
           vendor='fa'
           style={{ fontSize: '1.3rem', marginRight: '6px', float: 'left' }}
         />  
-        <p onClick={() => handleActionMailchimpIntegration()}>Mailchimp Integration</p>
+        <p>Mailchimp Integration</p>
       </Button>      
     </CallToActionWrapper>
   );

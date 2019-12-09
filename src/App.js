@@ -8,7 +8,7 @@ import PageContainer from './shared/components/PageContainer';
 import CardList from './shared/components/CardList';
 import MailchimpCallToActionButton from './shared/components/MailchimpCallToActionButton';
 
-import { loadFonts, GlobalStyle } from './shared/theme/core';
+import { GlobalStyle } from './shared/theme/core';
 
 type State = {|
   isLoading: boolean,
@@ -25,7 +25,6 @@ const App = () => {
     <>
       <BarProgressIndicator loading={isLoading} />
 
-      <loadFonts />
       <GlobalStyle />
       
       <Header />
