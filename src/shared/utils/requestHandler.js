@@ -19,10 +19,10 @@ export const checkStatus = (response) => {
   throw error;
 };
 
-export const doRequest = (method, endpoint, data = {}, params = {}, headers = {}) => {
-  const url = `http://localhost:3000/api/v1/${endpoint}`;
+export const doRequest = ({ method, endpoint, data = {}, params = {}, headers = {} }) => {
+  const url = `http://localhost:5000/api/v1/${endpoint}`;
 
-  axios({
+  return axios({
     method,
     url,
     data,

@@ -27,4 +27,21 @@ Here's a brief overview of technology stack:
 A brief overview of the project file structure
 ```
 ├── src
+  ├── shared
+    ├── assets
+    ├── components
+    ├── theme
+      ├── core
+      ├── objects
+      ├── settings
+    ├── utils
+  ├── store
+    ├── ducks
+    ├── helpers
+    ├── configureReducers.js
+    ├── index.js
+  ├── App.js
+  ├── index.js
+  ├── serviceWorker.js
+├── public
 ```
