@@ -6,19 +6,15 @@ const CardList = () => {
   return (
     <CardListWrapper>
       <List>
-        Import list from MailChimp
+        Lista 1
       </List>
 
       <List>
-        Olá
+        Lista 2 
       </List>
 
       <List>
-        Olá
-      </List>
-
-      <List>
-        Olá
+        Lista 3
       </List>
     </CardListWrapper>
   );
