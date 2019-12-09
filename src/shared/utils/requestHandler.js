@@ -19,16 +19,15 @@ export const checkStatus = (response) => {
   throw error;
 };
 
-export const doRequest = ({ method, endpoint, data = {}, params = {}, headers = {} }) => {
+export const doRequest = async (method, endpoint, data = {}, params = {}, headers = {}) => {
   const url = `http://localhost:5000/api/v1/${endpoint}`;
 
-  return axios({
+  await axios({
     method,
     url,
     data,
     params,
     headers,
   })
-    .then(checkStatus)
-    .then(parseRequest);
+
 };

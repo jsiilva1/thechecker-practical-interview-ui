@@ -7,4 +7,5 @@ export const ProgressWrapper = styled.div`
   border-radius: 7px;
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 4px;
+  transition: width .2s ease-in;
 `;

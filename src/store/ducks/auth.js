@@ -1,8 +1,6 @@
 import axios from 'axios';
-import isEmpty from 'is-empty';
 
 import { createReducer } from '../helpers/createDynamicReducer';
-import { access } from 'fs';
 
 /*
  * Action Types

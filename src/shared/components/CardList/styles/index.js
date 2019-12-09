@@ -57,6 +57,11 @@ export const List = styled.article`
     color: #B8B8B8;
   }
 
+  .displayed-status {
+    font-size: 0.7rem;
+    color: #B8B8B8;
+  }
+
   .stats { 
     margin-top: 40px; 
     font-size: 1.2rem;

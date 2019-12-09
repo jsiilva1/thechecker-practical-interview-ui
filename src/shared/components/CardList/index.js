@@ -10,6 +10,7 @@ import { Button } from '../../theme/objects/Button';
 import { CardListWrapper, List, ListBody } from './styles';
 import { doRequest } from '../../utils/requestHandler';
 import ProgressBar from '../ProgressBar';
+import Axios from 'axios';
 
 /**
  * Component CardList
@@ -22,6 +23,28 @@ const CardList = () => {
   const [verifiedEmailsCount, setVerifiedEmailsCount] = useState(-1);
   const [emailsList, setEmailsList] = useState([]);
   const [verifiedEmails, setVerifiedEmails] = useState([]);
+  const [lists, setLists] = useState([]);
+
+  useEffect(() => {
+    const fetchLists = async () => {
+      if (localStorage.getItem('user')) {
+        const { username } = JSON.parse(localStorage.getItem('user'));
+
+        const response = await Axios({
+          method: 'GET',
+          url: `http://localhost:5000/api/v1/lists`,
+          params: {
+            username,
+          },
+        });
+  
+        const { data } = response.data;
+        setLists(lists => [...lists, data ]);
+      }
+    };
+
+    fetchLists();
+  }, []);
 
   useEffect(() => {
     const mockEmails = [
@@ -40,10 +63,8 @@ const CardList = () => {
   }, [verifiedEmails]);
 
   const handleTheCheckerVerification = () => {
-    let i = 0;
-
-    const fetch = async (email, i) => {
-      setTimeout(async function() { 
+    const fetchResults = async (email, i) => {
+      setTimeout(async () => { 
         const response = await doRequest({
           method: 'POST',
           endpoint: 'lists/verify',
@@ -56,38 +77,56 @@ const CardList = () => {
       }, 1000 * i);      
     };
 
-    for (let i = 0; i < emailsList.length; i++) { 
-      fetch(emailsList[i].email, i);
+    emailsList.map((emailInfo, index) => fetchResults(emailInfo.email, index));
+  };
+
+  const displayStatus = () => {
+    if (verifiedEmailsCount === amountEmails) {
+      return <p className='displayed-status'>Verification completed</p>;
     } 
+
+    if (verifiedEmailsCount <= amountEmails) {
+      return <p className='displayed-status'>{verifiedEmailsCount} of {amountEmails} verified<br /></p>;
+    }
+  };
+
+  const showLists = () => {
+    if (lists.length === 1) {
+      const currentList = lists[0];
+
+      return (
+        <List>
+          <ListBody>
+            <h1 className='list-title'>{currentList[0].name}</h1>
+            <h2 className='list-id'>ID: {currentList[0].id}</h2>
+            <p className='list-createdat'>Created at {currentList[0].date_created}</p>
+
+            <p className='stats' title="View list">
+              <span className='stats-number'>{currentList[0].member_count}</span> emails in list
+            </p>
+
+            {displayStatus()}
+
+            <Button 
+              color='light' 
+              title={`Execute verification on ${amountEmails} emails in TheChecker Single Verification API`}
+              onClick={() => handleTheCheckerVerification()}
+              >
+              Execute verification
+            </Button>
+          </ListBody>
+
+          <div className='progress-bar-wrapper'>
+            <ProgressBar percent={(verifiedEmailsCount / amountEmails) * 100} />
+          </div>
+        </List>
+      );
+    }
   };
 
   return (
     <CardListWrapper>
-      <List>
-        <ListBody>
-          <h1 className='list-title'>List title</h1>
-          <h2 className='list-id'>ID: 5deb0de401e34328d288d398</h2>
-          <p className='list-createdat'>Created at December 6, 2019 11:26 PM</p>
-
-          <p className='stats' title="View list">
-            <span className='stats-number'>4</span> emails in list
-          </p>
-
-          {verifiedEmailsCount} de {amountEmails} verified<br />
-
-          <Button 
-            color='light' 
-            title="Execute verification on 4 emails in TheChecker Single Verification API"
-            onClick={() => handleTheCheckerVerification()}
-            >
-            Execute verification
-          </Button>
-        </ListBody>
-
-        <div className='progress-bar-wrapper'>
-            <ProgressBar percent={(verifiedEmailsCount / amountEmails) * 100} />
-          </div>
-      </List>
+      {showLists()}
     </CardListWrapper>
   );
 };
