@@ -2,7 +2,7 @@
  * External Dependencies
  */
 import React, { useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { connect, useSelector } from 'react-redux';
 
 /**
  * Internal Dependencies
@@ -11,6 +11,7 @@ import Icon from '../Icon';
 import { Button } from '../../theme/objects/Button';
 import { CallToActionWrapper } from './styles';
 import { doRequest } from '../../utils/requestHandler';
+import { mailchimpLogin } from '../../../store/ducks/auth';
 
 /**
  * Component MailchimpCallToActionButton
@@ -18,7 +19,9 @@ import { doRequest } from '../../utils/requestHandler';
  * Render the call to action buttton to get lists of mailchimp
  * @return {*}
  */
-const MailchimpCallToActionButton = () => {
+const MailchimpCallToActionButton = ({ mailchimpLogin }) => {
+  const access_token = useSelector(state => state.access_token);
+
   const handleActionMailchimpIntegration = async () => {
     const mailchimpUri = 'https://login.mailchimp.com/oauth2/authorize?response_type=code&client_id=427517757036';
     
@@ -26,27 +29,13 @@ const MailchimpCallToActionButton = () => {
   };
 
   useEffect(() => {
-    toast.info('The integration with mailchimp was successful!');
-
     const { search } = window.location;
     const params = new URLSearchParams(search);
     
     const code = params.get('code');
     
     if (code) {
-      doRequest({
-        method: 'POST',
-        endpoint: 'mailchimp/authorize',
-        data: {
-          code,
-        },
-      })
-        .then((res) => {
-          const { data } = res;
-
-          localStorage.setItem('access_token', data.access_token);
-        
-        });
+      const login = mailchimpLogin({ code });
     }
   });
 
@@ -67,4 +56,4 @@ const MailchimpCallToActionButton = () => {
   );
 };
 
-export default MailchimpCallToActionButton;
+export default connect(null, { mailchimpLogin })(MailchimpCallToActionButton);
