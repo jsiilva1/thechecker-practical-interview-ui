@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
  */
 import { Button } from '../../theme/objects/Button';
 import { CardListWrapper, List, ListBody } from './styles';
-import { doRequest } from '../../utils/requestHandler';
+import { doRequest2 } from '../../utils/requestHandler';
 import ProgressBar from '../ProgressBar';
 import Axios from 'axios';
 
@@ -26,6 +26,7 @@ const CardList = () => {
   const [lists, setLists] = useState([]);
 
   useEffect(() => {
+    // Get lists from username
     const fetchLists = async () => {
       if (localStorage.getItem('user')) {
         const { username } = JSON.parse(localStorage.getItem('user'));
@@ -39,7 +40,7 @@ const CardList = () => {
         });
   
         const { data } = response.data;
-        setLists(lists => [...lists, data ]);
+        setLists(lists => [...lists, data[0] ]);
       }
     };
 
@@ -47,16 +48,30 @@ const CardList = () => {
   }, []);
 
   useEffect(() => {
-    const mockEmails = [
-      { email: 'jsiilva@outlook.com.br', isVerified: false },
-      { email: 'asd1as5d@outlook.com', isVerified: false },
-      { email: 'lara.lira@outlook.com', isVerified: false },
-      { email: 'mr.robot@gmail.com', isVerified: false },
-    ];
+    // Get audience from list
+    const fetchEmails = async () => {
+      if (localStorage.getItem('user')) {
+        if (lists[0]) {
+          const { username } = JSON.parse(localStorage.getItem('user'));
 
-    setEmailsList(mockEmails);
-    setAmountEmails(mockEmails.length);
-  }, []);
+          const response = await Axios({
+            method: 'GET',
+            url: `http://localhost:5000/api/v1/lists/${lists[0].id}`,
+            params: {
+              username,
+            },
+          });
+    
+          const { data } = response.data;
+  
+          setEmailsList(data);
+          setAmountEmails(data.length);
+        }
+      }
+    };   
+    
+    fetchEmails();
+  }, [lists]);
 
   useEffect(() => {
     setVerifiedEmailsCount(verifiedEmailsCount + 1);
@@ -65,19 +80,19 @@ const CardList = () => {
   const handleTheCheckerVerification = () => {
     const fetchResults = async (email, i) => {
       setTimeout(async () => { 
-        const response = await doRequest({
+        const response = await doRequest2({
           method: 'POST',
           endpoint: 'lists/verify',
           data: { email }
         });
   
         if (response.data) {         
-          setVerifiedEmails(verifiedEmails => [...verifiedEmails, response.data.email ]);
+          setVerifiedEmails(verifiedEmails => [...verifiedEmails, response.data.email_address ]);
         }
       }, 1000 * i);      
     };
 
-    emailsList.map((emailInfo, index) => fetchResults(emailInfo.email, index));
+    emailsList.map((emailInfo, index) => fetchResults(emailInfo.email_address, index));
   };
 
   const displayStatus = () => {
@@ -92,24 +107,22 @@ const CardList = () => {
 
   const showLists = () => {
     if (lists.length === 1) {
-      const currentList = lists[0];
-
       return (
         <List>
           <ListBody>
-            <h1 className='list-title'>{currentList[0].name}</h1>
-            <h2 className='list-id'>ID: {currentList[0].id}</h2>
-            <p className='list-createdat'>Created at {currentList[0].date_created}</p>
+            <h1 className='list-title'>{lists[0].name}</h1>
+            <h2 className='list-id'>ID: {lists[0].id}</h2>
+            <p className='list-createdat'>Created at {lists[0].date_created}</p>
 
             <p className='stats' title="View list">
-              <span className='stats-number'>{currentList[0].member_count}</span> emails in list
+              <span className='stats-number'>{lists[0].member_count}</span> emails in list
             </p>
 
             {displayStatus()}
 
             <Button 
               color='light' 
-              title={`Execute verification on ${amountEmails} emails in TheChecker Single Verification API`}
+              title={`Execute verification on ${lists[0].member_count} emails in TheChecker Single Verification API`}
               onClick={() => handleTheCheckerVerification()}
               >
               Execute verification

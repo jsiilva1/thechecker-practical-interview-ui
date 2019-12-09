@@ -29,5 +29,18 @@ export const doRequest = async (method, endpoint, data = {}, params = {}, header
     params,
     headers,
   })
+};
 
+export const doRequest2 = ({ method, endpoint, data = {}, params = {}, headers = {} }) => {
+  const url = `http://localhost:5000/api/v1/${endpoint}`;
+
+  return axios({
+    method,
+    url,
+    data,
+    params,
+    headers,
+  })
+    .then(checkStatus)
+    .then(parseRequest);
 };
