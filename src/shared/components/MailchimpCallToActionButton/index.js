@@ -10,7 +10,6 @@ import { connect, useSelector } from 'react-redux';
 import Icon from '../Icon';
 import { Button } from '../../theme/objects/Button';
 import { CallToActionWrapper } from './styles';
-import { doRequest } from '../../utils/requestHandler';
 import { mailchimpLogin } from '../../../store/ducks/auth';
 
 /**
@@ -20,8 +19,6 @@ import { mailchimpLogin } from '../../../store/ducks/auth';
  * @return {*}
  */
 const MailchimpCallToActionButton = ({ mailchimpLogin }) => {
-  const access_token = useSelector(state => state.access_token);
-
   const handleActionMailchimpIntegration = async () => {
     const mailchimpUri = 'https://login.mailchimp.com/oauth2/authorize?response_type=code&client_id=427517757036';
     

@@ -1,13 +1,14 @@
 /**
  * External Dependencies
  */
-import React from 'react';
+import React, { useState, useEffect, withState } from 'react';
 
 /**
  * Internal Dependencies
  */
 import { Button } from '../../theme/objects/Button';
 import { CardListWrapper, List } from './styles';
+import { doRequest } from '../../utils/requestHandler';
 
 /**
  * Component CardList
@@ -16,6 +17,49 @@ import { CardListWrapper, List } from './styles';
  * @return {Object} component.
  */
 const CardList = () => {
+  const [amountEmails, setAmountEmails] = useState(0);
+  const [verifiedEmailsCount, setVerifiedEmailsCount] = useState(-1);
+  const [emailsList, setEmailsList] = useState([]);
+  const [verifiedEmails, setVerifiedEmails] = useState([]);
+
+  useEffect(() => {
+    const mockEmails = [
+      { email: 'jsiilva@outlook.com.br', isVerified: false },
+      { email: 'asd1as5d@outlook.com', isVerified: false },
+      { email: 'lara.lira@outlook.com', isVerified: false },
+      { email: 'mr.robot@gmail.com', isVerified: false },
+    ];
+
+    setEmailsList(mockEmails);
+    setAmountEmails(mockEmails.length);
+  }, []);
+
+  useEffect(() => {
+    setVerifiedEmailsCount(verifiedEmailsCount + 1);
+  }, [verifiedEmails]);
+
+  const handleTheCheckerVerification = () => {
+    let i = 0;
+
+    const fetch = async (email, i) => {
+      setTimeout(async function() { 
+        const response = await doRequest({
+          method: 'POST',
+          endpoint: 'lists/verify',
+          data: { email }
+        });
+  
+        if (response.data) {         
+          setVerifiedEmails(verifiedEmails => [...verifiedEmails, response.data.email ]);
+        }
+      }, 1000 * i);      
+    };
+
+    for (let i = 0; i < emailsList.length; i++) { 
+      fetch(emailsList[i].email, i);
+    } 
+  };
+
   return (
     <CardListWrapper>
       <List>
@@ -27,9 +71,12 @@ const CardList = () => {
           <span className='stats-number'>4</span> emails in list
         </p>
 
+        {verifiedEmailsCount} de {amountEmails} <br />
+
         <Button 
           color='light' 
           title="Execute verification on 4 emails in TheChecker Single Verification API"
+          onClick={() => handleTheCheckerVerification()}
           >
           Execute verification
         </Button>
