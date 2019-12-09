@@ -12,8 +12,8 @@ export const HeaderBox = styled.header`
   z-index: 100;
 
   @media ${device.mobile} {
-    padding: 10px 100px;
-    float: left;
     width: 100%;
+    display: flex;
+    justify-content: center;
   }
 `;

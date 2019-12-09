@@ -5,6 +5,7 @@ export const FooterBox = styled.footer`
   position: fixed;
   bottom: 0;
   font-size: 0.8rem;
-  padding: 2px 20px;
+  padding: 2px 0;
   color: #7f8c8d;
+  text-align: center;
 `;

@@ -8,8 +8,7 @@ export const LogoContainer = styled.div`
   width: 100vh;
   display: flex;
   flex-flow: row wrap;
-  margin-left: 54%;
-  transform: translate(-65%,0);
+  margin: 0 auto;
   max-width: 350px;
 
   & p {
@@ -27,8 +26,13 @@ export const LogoContainer = styled.div`
   }
 
   @media ${device.mobile} {
-    width: 100vh;
-    margin: 15% 86%;
+    float: left;
+    margin: 0 10px;
+
+    p { 
+      font-size: 0.96rem; 
+      margin-top: 7px;
+    }
   }
 `;
 
