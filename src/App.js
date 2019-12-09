@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Logo from './shared/components/Logo';
+import Header from './shared/components/Header';
 import { loadFonts, GlobalStyle } from './shared/theme/core';
 
 const App = () => {
@@ -8,7 +8,7 @@ const App = () => {
     <div className="App">
       <loadFonts />
       <GlobalStyle />
-      <Logo />
+      <Header />
       <p>hello world from thechecker practical interview app</p>
     </div>
   );

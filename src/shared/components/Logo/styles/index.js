@@ -4,13 +4,15 @@ import logoSrc from '../../../assets/images/thechecker_logo.svg';
 
 export const LogoContainer = styled.div`
   display: flex;
-  flex-flow: row nowwrap;
+  flex-flow: row wrap;
+  float: left;
+  justify-content: flex-start;
 
   & p {
     float: left;
     position: relative;
-    left: 25px;
-    top: 7px;
+    left: -36px;
+    top: 10px;
     font-weight: 400;
     color: #cdcdcd;
     font-size: 1.2rem;
@@ -18,8 +20,7 @@ export const LogoContainer = styled.div`
 `;
 
 export const Figure = styled.figure`
-  width: 112px;
-  height: 23px;
+  height: 30px;
 `;
 
 export const LogoAvatar = styled.img.attrs({
