@@ -4,13 +4,30 @@ export const Button = styled.div`
   box-shadow: 0px 10px 14px -7px #95a5a6;
 	border-radius: 20px;
 	display: inline-block;
-	cursor: pointer;
-	color: #FFF;
 	font-size: .98rem;
 	font-weight: 800;
 	padding: 13px 32px;
   text-shadow: 0px 1px 0px #3d768a;
   
+  color: ${props => {
+    if (props.color) {
+      const { color } = props;
+
+      switch (color) {
+        case 'primary':
+          return '#FFF';
+
+        case 'secondary':
+          return '#FFF';
+
+        case 'light':
+          return '#B0B0B0';
+
+        default: return '#cdcdcd';
+      }
+    }
+  }};
+
   background: ${props => {
     if (props.color) {
       const { color } = props;
@@ -22,13 +39,31 @@ export const Button = styled.div`
         case 'secondary':
           return '#2c3e50';
 
-        default: return '#2c3e50';
+        default: return '#FFF';
       }
-    }
+    } 
   }}
 
+  opacity: ${props => {
+    if (props.disabled) {
+      return '0.5';
+    }
+  }};
+
+  cursor: ${props => {
+    if (props.disabled) {
+      return 'default';
+    } else {
+      return 'pointer;'
+    }
+  }};
+
   &:hover {
-    opacity: 0.97;
+    opacity: ${props => {
+      if (!props.disabled) {
+        return '0.9';
+      }
+    }};
   }
 
   &:active {
