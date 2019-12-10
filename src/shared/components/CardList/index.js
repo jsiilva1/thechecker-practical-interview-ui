@@ -159,7 +159,7 @@ const CardList = () => {
   const getSincedLists = async () => {
     const response = await Axios({
       method: 'GET',
-      url: `${process.env.REACT_APP_API_URL}/lists`
+      url: `http://localhost:5000/api/v1/lists`
     });
 
     if (response.data.success) {

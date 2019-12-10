@@ -21,6 +21,7 @@ import Axios from 'axios';
  */
 const MailchimpCallToActionButton = ({ mailchimpLogin }) => {
   const [code, setCode] = useState('');
+  const [user, setUser] = useState({});
 
   /**
    * Handle to start Oauth flow of mailchimp
@@ -66,12 +67,18 @@ const MailchimpCallToActionButton = ({ mailchimpLogin }) => {
             const { login } = response.data.data;
             const { login_email, login_name } = login;
   
-            // Set user on local storage
-            localStorage.setItem('user', JSON.stringify({ email: login_email, username: login_name }));
+            setUser({ email: login_email, username: login_name });
         })();
       }
     }
   }, [code]);
+
+  useEffect(() => {
+    if (user) {
+      // Set user on local storage
+      localStorage.setItem('user', JSON.stringify(user));      
+    }
+  });
 
   return (
     <CallToActionWrapper>
