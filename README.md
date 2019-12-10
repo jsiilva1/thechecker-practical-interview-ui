@@ -45,3 +45,29 @@ A brief overview of the project file structure
   ├── serviceWorker.js
 ├── public
 ```
+
+### Install and run with NPM
+If you never developed in this repo before:
+
+1.  **Clone the repository:**
+
+```sh
+
+$ git clone git@github.com:jsiilva1/thechecker-practical-interview-ui.git
+
+```
+2.  **Install Dependencies**
+
+```sh
+
+$ yarn or npm install
+
+```
+
+1.  **Start**
+
+```sh
+
+$ yarn start
+
+```
