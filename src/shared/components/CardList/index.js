@@ -34,7 +34,7 @@ const CardList = () => {
 
         const response = await Axios({
           method: 'GET',
-          url: `http://localhost:5000/api/v1/lists`,
+          url: `http://localhost:5000/api/v1/provider/mailchimp/lists`,
           params: {
             username,
           },
@@ -57,7 +57,7 @@ const CardList = () => {
 
           const response = await Axios({
             method: 'GET',
-            url: `http://localhost:5000/api/v1/lists/${lists[0].id}`,
+            url: `http://localhost:5000/api/v1/provider/mailchimp/lists/${lists[0].id}`,
             params: {
               username,
             },

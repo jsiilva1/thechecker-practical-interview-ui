@@ -53,7 +53,7 @@ export const mailchimpLogin = data => (dispatch, getState) => {
   dispatch({ type: Types.MAILCHIMP_OAUTH_LOGIN_REQUEST, payload: data });
 
   axios
-    .post('http://localhost:5000/api/v1/mailchimp/authorize', data)
+    .post('http://localhost:5000/api/v1/provider/mailchimp/authorize', data)
     .then((res) => {
       // Get token from response and save localStorage
       const { access_token } = res.data.data;

@@ -47,7 +47,7 @@ const MailchimpCallToActionButton = ({ mailchimpLogin }) => {
           const response = 
             await Axios({
               method: 'POST',
-              url: 'http://localhost:5000/api/v1/mailchimp/user',
+              url: 'http://localhost:5000/api/v1/provider/mailchimp/user',
               data: { access_token }
             });
             
