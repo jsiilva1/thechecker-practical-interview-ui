@@ -299,7 +299,6 @@ const CardList = () => {
     }
   };
 
-  /*
   const renderTableBody = () => {
     if (listDetail.length > 0) {
       const { emails } = listDetail[0][0];
@@ -316,10 +315,9 @@ const CardList = () => {
       });
     }
   };
- */
+ 
   const handleModalOpen = () => setModalIsOpen(true);
 
-  /*
   const handleModalClose = () => setModalIsOpen(false);
 
   const renderModal = () => {
@@ -363,11 +361,11 @@ const CardList = () => {
       </ModalTransition>
     );
   };
-*/
+
   return (
     <CardListWrapper>
       {showLists()}
-      {/*renderModal()*/}
+      {renderModal()}
     </CardListWrapper>
   );
 };
