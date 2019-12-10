@@ -6,6 +6,7 @@ import Axios from 'axios';
 import { toast } from 'react-toastify';
 import '../../../../node_modules//react-toastify/dist/ReactToastify.css';
 import Modal, { ModalTransition } from '@atlaskit/modal-dialog';
+import Skeleton from 'react-loading-skeleton';
 
 /**
  * Internal Dependencies
@@ -34,6 +35,7 @@ const CardList = () => {
   const [lists, setLists] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [listDetail, setListDetail] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   /*
    * Since lists with mailchimp on component mount
@@ -46,7 +48,7 @@ const CardList = () => {
 
         const response = await Axios({
           method: 'GET',
-          url: `http://localhost:5000/api/v1/provider/mailchimp/lists`,
+          url: `${process.env.REACT_APP_API_URL}/provider/mailchimp/lists`,
           params: {
             username,
           },
@@ -77,7 +79,7 @@ const CardList = () => {
 
             const response = await Axios({
               method: 'GET',
-              url: `http://localhost:5000/api/v1/provider/mailchimp/lists/${mailchimpLists[0].id}`,
+              url: `${process.env.REACT_APP_API_URL}/provider/mailchimp/lists/${mailchimpLists[0].id}`,
               params: {
                 username,
               },
@@ -103,7 +105,7 @@ const CardList = () => {
           // Execute presave to verify if mailchimp list id exists
           const response = await Axios({
             method: 'GET',
-            url: `http://localhost:5000/api/v1/provider/mailchimp/lists/presave/${id}`,
+            url: `${process.env.REACT_APP_API_URL}/provider/mailchimp/lists/presave/${id}`,
           });
 
           const { data } = response.data;
@@ -128,7 +130,7 @@ const CardList = () => {
               // Create list into database
               const createList = await Axios({
                 method: 'POST',
-                url: 'http://localhost:5000/api/v1/lists',
+                url: `${process.env.REACT_APP_API_URL}/lists`,
                 data: body,
               });
 
@@ -150,9 +152,11 @@ const CardList = () => {
   }, [mailchimpLists]);
 
   const getSincedLists = async () => {
+    setIsLoading(true);
+
     const response = await Axios({
       method: 'GET',
-      url: 'http://localhost:5000/api/v1/lists'
+      url: `${process.env.REACT_APP_API_URL}/lists`
     });
 
     if (response.data.success) {
@@ -181,8 +185,6 @@ const CardList = () => {
           method: 'PUT',
           url: `http://localhost:5000/api/v1/lists/${lists[0]._id}`
         });
-
-        getSincedLists();
       }
     } catch (err) {
       console.log(err);
@@ -233,6 +235,7 @@ const CardList = () => {
   const showLists = () => {
     if (lists.length > 0) {
       return (
+        <>
         <List>
           <ListBody>
             {lists[0].verified && (
@@ -281,6 +284,7 @@ const CardList = () => {
             <ProgressBar percent={(verifiedEmailsCount / amountEmails) * 100} />
           </div>
         </List>
+        </>
       );
     }
   };
@@ -291,7 +295,7 @@ const CardList = () => {
 
     const response = await Axios({
       method: 'GET',
-      url: `http://localhost:5000/api/v1/lists/${lists[0].mailchimpListId}`
+      url: `${process.env.REACT_APP_API_URL}/lists/${lists[0].mailchimpListId}`
     });
 
     if (response.data.success) {
@@ -306,10 +310,10 @@ const CardList = () => {
       return emails.map((email) => {
         return (
           <tr>
-            <td>{email.email_address}</td>
-            <td>{email.status}</td>
-            <td>{email.statusDetail}</td>
-            <td>{email.listId}</td>
+            <td><p>{email.email_address}</p></td>
+            <td><p>{email.status}</p></td>
+            <td><p>{email.statusDetail}</p></td>
+            <td><p>{email.listId}</p></td>
           </tr>          
         );
       });
