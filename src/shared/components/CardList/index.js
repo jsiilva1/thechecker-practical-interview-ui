@@ -15,6 +15,7 @@ import { CardListWrapper, List, ListBody } from './styles';
 import { doRequest2 } from '../../utils/requestHandler';
 import ProgressBar from '../ProgressBar';
 import Icon from '../Icon';
+import { getObjectUnique } from '../../utils/helpers';
 
 toast.configure();
 /**
@@ -34,9 +35,12 @@ const CardList = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [listDetail, setListDetail] = useState([]);
 
+  /*
+   * Since lists with mailchimp on component mount
+  */
   useEffect(() => {
     // Get lists from username
-    const fetchLists = async () => {
+    const fetchMailchimpLists = async () => {
       if (localStorage.getItem('user')) {
         const { username } = JSON.parse(localStorage.getItem('user'));
 
@@ -49,87 +53,143 @@ const CardList = () => {
         });
 
         const { data } = response.data;
-        setMailchimpLists(mailchimpLists => [...mailchimpLists, data[0]]);
+
+        // Avoid redundancies in mailchimp array lists
+        const getUniqueMailchimpLists = getObjectUnique(data, 'id');
+
+        // Iterate lists
+        getUniqueMailchimpLists.map((list) => {
+          setMailchimpLists([...mailchimpLists, list]);
+        });
       }
     };
 
-    fetchLists();
-    sinceLists();
+    fetchMailchimpLists();
   }, []);
 
   useEffect(() => {
-    // Get audience from list
-    const fetchEmails = async () => {
-      if (localStorage.getItem('user')) {
-        if (mailchimpLists[0]) {
-          const { username } = JSON.parse(localStorage.getItem('user'));
+    if (mailchimpLists.length > 0) {
+      // Get audience from list
+      const fetchEmailsAudience = async () => {
+        if (localStorage.getItem('user')) {
+          if (mailchimpLists[0]) {
+            const { username } = JSON.parse(localStorage.getItem('user'));
 
+            const response = await Axios({
+              method: 'GET',
+              url: `http://localhost:5000/api/v1/provider/mailchimp/lists/${mailchimpLists[0].id}`,
+              params: {
+                username,
+              },
+            });
+
+            const { data } = response.data;
+
+            setEmailsList({ email_address: data.email_address });
+
+            return data;
+          }
+        }
+      };
+
+      /*
+       *
+       * Synce lists with API into
+      */
+      const sendListToAPI = async () => {
+        mailchimpLists.map(async (mailchimpList) => {
+          const { id } = mailchimpList;
+
+          // Execute presave to verify if mailchimp list id exists
           const response = await Axios({
             method: 'GET',
-            url: `http://localhost:5000/api/v1/provider/mailchimp/lists/${mailchimpLists[0].id}`,
-            params: {
-              username,
-            },
+            url: `http://localhost:5000/api/v1/provider/mailchimp/lists/presave/${id}`,
           });
 
           const { data } = response.data;
 
-          setEmailsList({ email_address: data.email_address });
+          // If list not exists
+          if (!data) {
+            // Get all emails
+            const fetchEmailsFromList = await fetchEmailsAudience();
+            const emails = [];
 
-          return data;
-        }
+            if (fetchEmailsFromList) {
+              fetchEmailsFromList.map((email) => emails.push({ email_address: email.email_address }));
+            }
+
+            let body = {
+              name: mailchimpLists[0].name,
+              mailchimpListId: mailchimpLists[0].id,
+              emailsInfo: emails,
+            };
+
+            try {
+              // Create list into database
+              const createList = await Axios({
+                method: 'POST',
+                url: 'http://localhost:5000/api/v1/lists',
+                data: body,
+              });
+
+              if (createList.data.success) {
+                getSincedLists();
+                toast.success('Synced lists successfully', { className: 'toaster' });
+              }
+            } catch (err) {
+              toast.error('Error syncing lists', { className: 'toaster' });
+            }
+          }
+        });
+      };
+
+      // Sync new lists in api
+      sendListToAPI();
+      getSincedLists();
+    } // end if    
+  }, [mailchimpLists]);
+
+  const getSincedLists = async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: 'http://localhost:5000/api/v1/lists'
+    });
+
+    if (response.data.success) {
+      if (response.data.data) {
+        const { data: listData } = response.data;
+
+        // Set lists to new data from db
+        // Iterate lists
+        listData.map((list) => {
+          setLists([...lists, list]);
+        });
       }
-    };
 
-    const sendLists = async () => {
-      if (mailchimpLists[0]) {
-        // Execute presave to verify if mailchimp list id exists
+      const res = response.data.data[0];
+
+      if (res) {
+        setAmountEmails(res.emails.length);
+      }
+    }
+  };
+
+  const updateList = async () => {
+    try {
+      if (lists[0]) {
         const response = await Axios({
-          method: 'GET',
-          url: `http://localhost:5000/api/v1/provider/mailchimp/lists/presave/${mailchimpLists[0].id}`,
+          method: 'PUT',
+          url: `http://localhost:5000/api/v1/lists/${lists[0]._id}`
         });
 
-        const { data } = response.data;
-
-        // If list not exists
-        if (!data) {
-          // Get all emails
-          const fetchEmailsFromList = await fetchEmails();
-          const emails = [];
-
-          if (fetchEmailsFromList) {
-            fetchEmailsFromList.map((email) => emails.push({ email_address: email.email_address }));
-          }
-
-          let body = {
-            name: mailchimpLists[0].name,
-            mailchimpListId: mailchimpLists[0].id,
-            emailsInfo: emails,
-          };
-
-          try {
-            // Create list into database
-            const createList = await Axios({
-              method: 'POST',
-              url: 'http://localhost:5000/api/v1/lists',
-              data: body,
-            });
-
-            if (createList.data.success) {
-              // Set lists to new data from db
-              sinceLists();
-
-              toast.success('Synced lists successfully', { className: 'toaster' });
-            }
-          } catch (err) {
-            toast.error('Error syncing lists', { className: 'toaster' });
-          }
-        }
+        getSincedLists();
       }
-    };
+    } catch (err) {
+      console.log(err);
+    }
 
-    sendLists();
-  }, [mailchimpLists, lists]);
+    getSincedLists();
+  };
 
   useEffect(() => {
     setVerifiedEmailsCount(verifiedEmailsCount + 1);
@@ -149,53 +209,19 @@ const CardList = () => {
         });
 
         if (response.data) {
-          setVerifiedEmails(verifiedEmails => [...verifiedEmails, response.data.email_address]);
+          setVerifiedEmails([...verifiedEmails, response.data.email_address]);
         }
       }, 1000 * i);
     };
 
     emails.map((emailInfo, index) => fetchResults(emailInfo.email_address, index));
-  };
 
-  const sinceLists = async () => {
-    const response = await Axios({
-      method: 'GET',
-      url: 'http://localhost:5000/api/v1/lists'
-    });
-
-    if (response.data.success) {
-      // Set lists to new data from db
-      setLists(lists => [...lists, response.data.data[0]]);
-
-      const res = response.data.data[0];
-
-      if (res) {
-        setAmountEmails(res.emails.length);
-      }
-    }
-  };
-
-  const updateList = async () => {
-    try {
-      if (lists[0]) {
-        const response = await Axios({
-          method: 'PUT',
-          url: `http://localhost:5000/api/v1/lists/${lists[0]._id}`
-        });
-
-        if (response.data.success) {
-          // lista verified
-        }
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    // Update list status
+    updateList();
   };
 
   const displayStatus = () => {
     if (verifiedEmailsCount === amountEmails) {
-      updateList();
-
       return <p className='displayed-status'>Verification completed</p>;
     }
 
@@ -205,7 +231,7 @@ const CardList = () => {
   };
 
   const showLists = () => {
-    if (lists[0] && lists.length === 1) {
+    if (lists.length > 0) {
       return (
         <List>
           <ListBody>
@@ -224,7 +250,7 @@ const CardList = () => {
 
             <p className='stats'>
               <span className='stats-number'>{amountEmails}</span> emails in list
-            </p>
+              </p>
 
             {!lists[0].verified && displayStatus()}
 
@@ -237,7 +263,7 @@ const CardList = () => {
                 title={lists[0].verified ? 'This list has already been verified' : `Execute verification on ${amountEmails} emails in TheChecker Single Verification API`}
               >
                 Run verification
-                </Button>
+                  </Button>
             )}
 
             {lists[0].verified && (
@@ -247,7 +273,7 @@ const CardList = () => {
                 title={'View checked emails report'}
               >
                 View report
-                </Button>
+                  </Button>
             )}
           </ListBody>
 
@@ -269,10 +295,11 @@ const CardList = () => {
     });
 
     if (response.data.success) {
-      setListDetail(listDetail => [...listDetail, response.data.data]);
+      setListDetail([...listDetail, response.data.data]);
     }
   };
 
+  /*
   const renderTableBody = () => {
     if (listDetail.length > 0) {
       const { emails } = listDetail[0][0];
@@ -289,9 +316,10 @@ const CardList = () => {
       });
     }
   };
-
+ */
   const handleModalOpen = () => setModalIsOpen(true);
 
+  /*
   const handleModalClose = () => setModalIsOpen(false);
 
   const renderModal = () => {
@@ -335,11 +363,11 @@ const CardList = () => {
       </ModalTransition>
     );
   };
-
+*/
   return (
     <CardListWrapper>
       {showLists()}
-      {renderModal()}
+      {/*renderModal()*/}
     </CardListWrapper>
   );
 };
