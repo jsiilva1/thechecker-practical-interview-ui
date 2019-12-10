@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import { toast } from 'react-toastify';
 import '../../../../node_modules//react-toastify/dist/ReactToastify.css';
+import Modal, { ModalTransition } from '@atlaskit/modal-dialog';
 
 /**
  * Internal Dependencies
@@ -30,6 +31,8 @@ const CardList = () => {
   const [isChecking, setIsChecking] = useState(false);
   const [mailchimpLists, setMailchimpLists] = useState([]);
   const [lists, setLists] = useState([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [listDetail, setListDetail] = useState([]);
 
   useEffect(() => {
     // Get lists from username
@@ -204,16 +207,16 @@ const CardList = () => {
   const showLists = () => {
     if (lists[0] && lists.length === 1) {
       return (
-        <List>  
+        <List>
           <ListBody>
             {lists[0].verified && (
-              <Icon 
+              <Icon
                 title='Verified list'
-                name={['fas', 'check-circle']} 
+                name={['fas', 'check-circle']}
                 vendor='fa'
                 style={{ fontSize: '1rem', marginTop: '5px', float: 'right', color: '#57D695' }}
-            />                  
-            )}          
+              />
+            )}
 
             <h1 className='list-title'>{lists[0].name}</h1>
             <h2 className='list-id'>ID: {lists[0]._id}</h2>
@@ -234,18 +237,18 @@ const CardList = () => {
                 title={lists[0].verified ? 'This list has already been verified' : `Execute verification on ${amountEmails} emails in TheChecker Single Verification API`}
               >
                 Run verification
-                </Button>                
-              )}
+                </Button>
+            )}
 
-              {lists[0].verified && (
-                <Button
+            {lists[0].verified && (
+              <Button
                 color='light'
-                onClick={() => handleTheCheckerVerification()}
+                onClick={() => viewListReport()}
                 title={'View checked emails report'}
               >
                 View report
-                </Button>                
-              )}
+                </Button>
+            )}
           </ListBody>
 
           <div className='progress-bar-wrapper'>
@@ -256,9 +259,87 @@ const CardList = () => {
     }
   };
 
+  const viewListReport = async () => {
+    // Open modal
+    handleModalOpen();
+
+    const response = await Axios({
+      method: 'GET',
+      url: `http://localhost:5000/api/v1/lists/${lists[0].mailchimpListId}`
+    });
+
+    if (response.data.success) {
+      setListDetail(listDetail => [...listDetail, response.data.data]);
+    }
+  };
+
+  const renderTableBody = () => {
+    if (listDetail.length > 0) {
+      const { emails } = listDetail[0][0];
+  
+      return emails.map((email) => {
+        return (
+          <tr>
+            <td>{email.email_address}</td>
+            <td>{email.status}</td>
+            <td>{email.statusDetail}</td>
+            <td>{email.listId}</td>
+          </tr>          
+        );
+      });
+    }
+  };
+
+  const handleModalOpen = () => setModalIsOpen(true);
+
+  const handleModalClose = () => setModalIsOpen(false);
+
+  const renderModal = () => {
+    let listFullDetail = null;
+
+    if (listDetail[0]) listFullDetail = listDetail[0];
+
+    const actions = [
+      { text: 'Close', onClick: handleModalClose },
+    ];
+
+    return (
+      <ModalTransition>
+        {modalIsOpen && (
+          <div style={{ fontSize: '0.8rem' }}>
+            <Modal
+              actions={actions}
+              onClose={handleModalClose}
+              heading={`Report for ${listFullDetail ? listFullDetail[0].name : 'Unknown'} List`}
+              width={'60rem'}
+            >
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+                    <th>List ID</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {renderTableBody()}
+                </tbody>
+              </table>
+
+            </Modal>
+          </div>
+        )}
+      </ModalTransition>
+    );
+  };
+
   return (
     <CardListWrapper>
       {showLists()}
+      {renderModal()}
     </CardListWrapper>
   );
 };

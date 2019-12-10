@@ -18,6 +18,7 @@ export const List = styled.article`
   border: 1px solid #ecf0f1;
   border-radius: 7px;
   margin: 0px 9px 10px 0;
+	transition: 0.8s;
 
   @media ${device.tablet}, ${device.mobile} {
     .list-title {
@@ -84,6 +85,7 @@ export const List = styled.article`
     font-weight: 800 !important;
     text-shadow: none !important;
     color: #999 !important;
+    font-size: 0.9rem;
   }
 
   & .progress-bar-wrapper {
@@ -99,6 +101,12 @@ export const ListHeader = styled.div`
 
 export const ListBody = styled.div`
   margin: 20px;
+`;
+
+export const FrontCard = styled.div`
+  backface-visibility: hidden;
+  z-index: 2;
+	transform: rotateY(0deg);
 `;
 
 export const ToastContainer = styled.div`
