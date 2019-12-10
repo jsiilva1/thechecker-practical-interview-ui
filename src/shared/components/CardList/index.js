@@ -225,6 +225,10 @@ const CardList = () => {
         if (response.data) {
           setVerifiedEmails([...verifiedEmails, response.data.email_address]);
         }
+
+        if (i === amountEmails-1) {
+          toast.success('List updated. Refresh to view results', { className: 'toaster' });
+        }
       }, 1000 * i);
     };
 
