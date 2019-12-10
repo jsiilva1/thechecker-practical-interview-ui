@@ -283,7 +283,7 @@ const CardList = () => {
               <Button
                 color='light'
                 onClick={() => handleTheCheckerVerification()}
-                disabled={isChecking ? true : false}
+                disabled={isChecking ? false : true}
                 disabled={lists[0].verified ? true : false}
                 title={lists[0].verified ? 'This list has already been verified' : `Execute verification on ${amountEmails} emails in TheChecker Single Verification API`}
               >
