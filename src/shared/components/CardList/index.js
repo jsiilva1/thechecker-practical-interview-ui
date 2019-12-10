@@ -6,7 +6,6 @@ import Axios from 'axios';
 import { toast } from 'react-toastify';
 import '../../../../node_modules//react-toastify/dist/ReactToastify.css';
 import Modal, { ModalTransition } from '@atlaskit/modal-dialog';
-import Skeleton from 'react-loading-skeleton';
 
 /**
  * Internal Dependencies
@@ -19,6 +18,7 @@ import Icon from '../Icon';
 import { getObjectUnique } from '../../utils/helpers';
 
 toast.configure();
+
 /**
  * Component CardList
  * Render the cards of lists
@@ -35,7 +35,6 @@ const CardList = () => {
   const [lists, setLists] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [listDetail, setListDetail] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   /*
    * Since lists with mailchimp on component mount
@@ -69,6 +68,9 @@ const CardList = () => {
     fetchMailchimpLists();
   }, []);
 
+  /*
+   * Since lists from mailchimp to API
+  */  
   useEffect(() => {
     if (mailchimpLists.length > 0) {
       // Get audience from list
@@ -151,9 +153,10 @@ const CardList = () => {
     } // end if    
   }, [mailchimpLists]);
 
+  /*
+   * Get all lists from API
+  */    
   const getSincedLists = async () => {
-    setIsLoading(true);
-
     const response = await Axios({
       method: 'GET',
       url: `${process.env.REACT_APP_API_URL}/lists`
@@ -178,10 +181,13 @@ const CardList = () => {
     }
   };
 
+  /*
+   * Update list status 
+  */   
   const updateList = async () => {
     try {
       if (lists[0]) {
-        const response = await Axios({
+        await Axios({
           method: 'PUT',
           url: `http://localhost:5000/api/v1/lists/${lists[0]._id}`
         });
@@ -193,10 +199,16 @@ const CardList = () => {
     getSincedLists();
   };
 
+  /*
+   * To count each verified email on verified emails progress animation
+  */   
   useEffect(() => {
     setVerifiedEmailsCount(verifiedEmailsCount + 1);
   }, [verifiedEmails]);
 
+  /*
+   * Send email verification to API
+  */     
   const handleTheCheckerVerification = () => {
     const { emails } = lists[0];
 
@@ -222,6 +234,9 @@ const CardList = () => {
     updateList();
   };
 
+  /*
+   * Show status of verification emails
+  */    
   const displayStatus = () => {
     if (verifiedEmailsCount === amountEmails) {
       return <p className='displayed-status'>Verification completed</p>;
@@ -232,6 +247,9 @@ const CardList = () => {
     }
   };
 
+  /*
+   * Show lists 
+  */   
   const showLists = () => {
     if (lists.length > 0) {
       return (
@@ -289,6 +307,9 @@ const CardList = () => {
     }
   };
 
+  /*
+   * Get list and emails report
+  */     
   const viewListReport = async () => {
     // Open modal
     handleModalOpen();
@@ -303,6 +324,9 @@ const CardList = () => {
     }
   };
 
+  /*
+   * Render and show table body of reports list
+  */ 
   const renderTableBody = () => {
     if (listDetail.length > 0) {
       const { emails } = listDetail[0][0];
@@ -320,10 +344,19 @@ const CardList = () => {
     }
   };
  
+  /*
+   * Handle to open modal
+  */  
   const handleModalOpen = () => setModalIsOpen(true);
 
+  /*
+   * Handle to close modal
+  */   
   const handleModalClose = () => setModalIsOpen(false);
 
+  /*
+   * Render full report modal
+  */    
   const renderModal = () => {
     let listFullDetail = null;
 

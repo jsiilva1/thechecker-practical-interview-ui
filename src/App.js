@@ -1,6 +1,12 @@
 // @flow
+/**
+ * External Dependencies
+ */
 import React, { useState, useEffect } from 'react';
 
+/**
+ * Internal Dependencies
+ */
 import Header from './shared/components/Header';
 import Footer from './shared/components/Footer';
 import BarProgressIndicator from './shared/components/BarProgressIndicator';

@@ -22,17 +22,29 @@ import Axios from 'axios';
 const MailchimpCallToActionButton = ({ mailchimpLogin }) => {
   const [code, setCode] = useState('');
 
+  /**
+   * Handle to start Oauth flow of mailchimp
+   *
+   * @return {*}
+   */  
   const handleActionMailchimpIntegration = async () => {
     const mailchimpUri = 'https://login.mailchimp.com/oauth2/authorize?response_type=code&client_id=427517757036';
     
     window.open(mailchimpUri, '_blank');
   };
 
+  /**
+   * Component update based on code alteration get code of step1 of the 
+     Oauth flow and send login with redux props
+
+   * @return {*}
+   */    
   useEffect(() => {
     const { search } = window.location;
     const params = new URLSearchParams(search);
     const getCode = params.get('code');
 
+    // Set ouath code to state
     setCode(getCode);
     
     if (code) {

@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { Button } from '../../../theme/objects/Button';
 import { device } from '../../../theme/settings/screens';

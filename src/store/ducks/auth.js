@@ -65,7 +65,6 @@ export const mailchimpLogin = data => (dispatch, getState) => {
       }
       
       dispatch(setAccessToken(access_token));
-      // getCurrentUser().then(user => dispatch(setCurrentUser(user.data.data)));
     })
     .catch((err) => {
       dispatch({

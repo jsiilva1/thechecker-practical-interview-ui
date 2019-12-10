@@ -1,4 +1,4 @@
-import { createGlobalStyle, css } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 import { Reset } from 'styled-reset';
 import { LoadFonts } from '../core';
 
