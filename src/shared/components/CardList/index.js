@@ -2,6 +2,9 @@
  * External Dependencies
  */
 import React, { useState, useEffect } from 'react';
+import Axios from 'axios';
+import { toast } from 'react-toastify';
+import '../../../../node_modules//react-toastify/dist/ReactToastify.css';
 
 /**
  * Internal Dependencies
@@ -10,11 +13,9 @@ import { Button } from '../../theme/objects/Button';
 import { CardListWrapper, List, ListBody } from './styles';
 import { doRequest2 } from '../../utils/requestHandler';
 import ProgressBar from '../ProgressBar';
-import Axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-import '../../../../node_modules//react-toastify/dist/ReactToastify.css';
-toast.configure();
+import Icon from '../Icon';
 
+toast.configure();
 /**
  * Component CardList
  * Render the cards of lists
@@ -43,9 +44,9 @@ const CardList = () => {
             username,
           },
         });
-  
+
         const { data } = response.data;
-        setMailchimpLists(mailchimpLists => [...mailchimpLists, data[0] ]);
+        setMailchimpLists(mailchimpLists => [...mailchimpLists, data[0]]);
       }
     };
 
@@ -67,16 +68,16 @@ const CardList = () => {
               username,
             },
           });
-    
+
           const { data } = response.data;
-  
+
           setEmailsList({ email_address: data.email_address });
 
           return data;
         }
       }
-    };   
-    
+    };
+
     const sendLists = async () => {
       if (mailchimpLists[0]) {
         // Execute presave to verify if mailchimp list id exists
@@ -84,9 +85,9 @@ const CardList = () => {
           method: 'GET',
           url: `http://localhost:5000/api/v1/provider/mailchimp/lists/presave/${mailchimpLists[0].id}`,
         });
-  
+
         const { data } = response.data;
-        
+
         // If list not exists
         if (!data) {
           // Get all emails
@@ -120,8 +121,8 @@ const CardList = () => {
           } catch (err) {
             toast.error('Error syncing lists', { className: 'toaster' });
           }
-        } 
-      }    
+        }
+      }
     };
 
     sendLists();
@@ -137,17 +138,17 @@ const CardList = () => {
     const fetchResults = async (email, i) => {
       setIsChecking(true);
 
-      setTimeout(async () => { 
+      setTimeout(async () => {
         const response = await doRequest2({
           method: 'POST',
           endpoint: 'lists/verify',
           data: { email }
         });
-  
-        if (response.data) {         
-          setVerifiedEmails(verifiedEmails => [...verifiedEmails, response.data.email_address ]);
+
+        if (response.data) {
+          setVerifiedEmails(verifiedEmails => [...verifiedEmails, response.data.email_address]);
         }
-      }, 1000 * i);      
+      }, 1000 * i);
     };
 
     emails.map((emailInfo, index) => fetchResults(emailInfo.email_address, index));
@@ -158,17 +159,17 @@ const CardList = () => {
       method: 'GET',
       url: 'http://localhost:5000/api/v1/lists'
     });
-  
+
     if (response.data.success) {
       // Set lists to new data from db
-      setLists(lists => [...lists, response.data.data[0] ]);     
-      
+      setLists(lists => [...lists, response.data.data[0]]);
+
       const res = response.data.data[0];
 
       if (res) {
         setAmountEmails(res.emails.length);
       }
-    } 
+    }
   };
 
   const updateList = async () => {
@@ -197,42 +198,61 @@ const CardList = () => {
 
     if (verifiedEmailsCount <= amountEmails) {
       return <p className='displayed-status'>{verifiedEmailsCount} of {amountEmails} verified<br /></p>;
-    } 
+    }
   };
 
   const showLists = () => {
-    if (lists[0]) {
-      if (lists.length === 1) {
-        return (
-          <List>
-            <ListBody>
-              <h1 className='list-title'>{lists[0].name}</h1>
-              <h2 className='list-id'>ID: {lists[0]._id}</h2>
-              <p className='list-createdat'>Created at {lists[0].createdAt}</p>
-  
-              <p className='stats' title="View list">
-                <span className='stats-number'>{amountEmails}</span> emails in list
-              </p>
-  
-              {displayStatus()}
- 
-              <Button 
-                color='light' 
+    if (lists[0] && lists.length === 1) {
+      return (
+        <List>  
+          <ListBody>
+            {lists[0].verified && (
+              <Icon 
+                title='Verified list'
+                name={['fas', 'check-circle']} 
+                vendor='fa'
+                style={{ fontSize: '1rem', marginTop: '5px', float: 'right', color: '#57D695' }}
+            />                  
+            )}          
+
+            <h1 className='list-title'>{lists[0].name}</h1>
+            <h2 className='list-id'>ID: {lists[0]._id}</h2>
+            <p className='list-createdat'>Created at {lists[0].createdAt}</p>
+
+            <p className='stats'>
+              <span className='stats-number'>{amountEmails}</span> emails in list
+            </p>
+
+            {!lists[0].verified && displayStatus()}
+
+            {!lists[0].verified && (
+              <Button
+                color='light'
                 onClick={() => handleTheCheckerVerification()}
                 disabled={isChecking ? true : false}
                 disabled={lists[0].verified ? true : false}
                 title={lists[0].verified ? 'This list has already been verified' : `Execute verification on ${amountEmails} emails in TheChecker Single Verification API`}
-                >
-                Execute verification
-              </Button>
-            </ListBody>
-  
-            <div className='progress-bar-wrapper'>
-              <ProgressBar percent={(verifiedEmailsCount / amountEmails) * 100} />
-            </div>
-          </List>
-        );
-      }
+              >
+                Run verification
+                </Button>                
+              )}
+
+              {lists[0].verified && (
+                <Button
+                color='light'
+                onClick={() => handleTheCheckerVerification()}
+                title={'View checked emails report'}
+              >
+                View report
+                </Button>                
+              )}
+          </ListBody>
+
+          <div className='progress-bar-wrapper'>
+            <ProgressBar percent={(verifiedEmailsCount / amountEmails) * 100} />
+          </div>
+        </List>
+      );
     }
   };
 
