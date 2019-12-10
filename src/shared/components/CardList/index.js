@@ -135,7 +135,7 @@ const CardList = () => {
     const { emails } = lists[0];
 
     const fetchResults = async (email, i) => {
-        
+      setIsChecking(true);
 
       setTimeout(async () => { 
         const response = await doRequest2({
@@ -163,12 +163,35 @@ const CardList = () => {
       // Set lists to new data from db
       setLists(lists => [...lists, response.data.data[0] ]);     
       
-      setAmountEmails(response.data.data[0].emails.length); 
+      const res = response.data.data[0];
+
+      if (res) {
+        setAmountEmails(res.emails.length);
+      }
     } 
+  };
+
+  const updateList = async () => {
+    try {
+      if (lists[0]) {
+        const response = await Axios({
+          method: 'PUT',
+          url: `http://localhost:5000/api/v1/lists/${lists[0]._id}`
+        });
+
+        if (response.data.success) {
+          // lista verified
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const displayStatus = () => {
     if (verifiedEmailsCount === amountEmails) {
+      updateList();
+
       return <p className='displayed-status'>Verification completed</p>;
     }
 
@@ -188,16 +211,17 @@ const CardList = () => {
               <p className='list-createdat'>Created at {lists[0].createdAt}</p>
   
               <p className='stats' title="View list">
-                <span className='stats-number'>{4}</span> emails in list
+                <span className='stats-number'>{amountEmails}</span> emails in list
               </p>
   
               {displayStatus()}
-  
+ 
               <Button 
                 color='light' 
-                title={`Execute verification on 4 emails in TheChecker Single Verification API`}
                 onClick={() => handleTheCheckerVerification()}
-                disabled={!isChecking ? false : true}
+                disabled={isChecking ? true : false}
+                disabled={lists[0].verified ? true : false}
+                title={lists[0].verified ? 'This list has already been verified' : `Execute verification on ${amountEmails} emails in TheChecker Single Verification API`}
                 >
                 Execute verification
               </Button>
