@@ -71,7 +71,6 @@ const CardList = () => {
           const { data } = response.data;
   
           setEmailsList({ email_address: data.email_address });
-          setAmountEmails(data.length);
 
           return data;
         }
@@ -132,21 +131,11 @@ const CardList = () => {
     setVerifiedEmailsCount(verifiedEmailsCount + 1);
   }, [verifiedEmails]);
 
-  const sinceLists = async () => {
-    const response = await Axios({
-      method: 'GET',
-      url: 'http://localhost:5000/api/v1/lists'
-    });
-  
-    if (response.data.success) {
-      // Set lists to new data from db
-      setLists(lists => [...lists, response.data.data[0] ]);      
-    } 
-  };
-
   const handleTheCheckerVerification = () => {
+    const { emails } = lists[0];
+
     const fetchResults = async (email, i) => {
-      setIsChecking(true);
+        
 
       setTimeout(async () => { 
         const response = await doRequest2({
@@ -161,15 +150,31 @@ const CardList = () => {
       }, 1000 * i);      
     };
 
-    emailsList.map((emailInfo, index) => fetchResults(emailInfo.email_address, index));
+    emails.map((emailInfo, index) => fetchResults(emailInfo.email_address, index));
+  };
+
+  const sinceLists = async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: 'http://localhost:5000/api/v1/lists'
+    });
+  
+    if (response.data.success) {
+      // Set lists to new data from db
+      setLists(lists => [...lists, response.data.data[0] ]);     
+      
+      setAmountEmails(response.data.data[0].emails.length); 
+    } 
   };
 
   const displayStatus = () => {
-    if (verifiedEmailsCount <= amountEmails) {
-      return <p className='displayed-status'>{verifiedEmailsCount} of {amountEmails} verified<br /></p>;
-    } else if (verifiedEmailsCount === amountEmails) {
+    if (verifiedEmailsCount === amountEmails) {
       return <p className='displayed-status'>Verification completed</p>;
     }
+
+    if (verifiedEmailsCount <= amountEmails) {
+      return <p className='displayed-status'>{verifiedEmailsCount} of {amountEmails} verified<br /></p>;
+    } 
   };
 
   const showLists = () => {

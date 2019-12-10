@@ -11,6 +11,7 @@ export const Button = styled.button`
   line-height: normal;
   overflow: visible;
   border: 0;
+  outline: none;
 
   color: ${props => {
     if (props.color) {
