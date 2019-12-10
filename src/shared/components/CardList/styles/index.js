@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { Button } from '../../../theme/objects/Button';
 import { device } from '../../../theme/settings/screens';
@@ -100,3 +100,8 @@ export const ListHeader = styled.div`
 export const ListBody = styled.div`
   margin: 20px;
 `;
+
+export const ToastContainer = styled.div`
+  font-size: 1.3rem;
+`;
+

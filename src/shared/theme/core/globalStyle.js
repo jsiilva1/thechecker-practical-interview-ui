@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, css } from 'styled-components';
 import { Reset } from 'styled-reset';
 import { LoadFonts } from '../core';
 
@@ -9,6 +9,11 @@ export const GlobalStyle = createGlobalStyle`
     font-family: 'Lato', sans-serif;
     margin: 0;
     padding: 0;
+  }
+
+  .toaster {
+    font-size: 1rem;
+    font-weight: 500;
   }
 
   a { text-decoration: none; color: inherit; }
